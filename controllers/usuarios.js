@@ -14,14 +14,19 @@ const { response, request } = require('express');
 
 const usuariosGet = (req = request, res = response) => {
 
-    // Lo que necesito
-    // const {  } = req.query;
+    // const params = req.query;
 
-    const params = req.query;
+
+    // Lo que necesito
+    const { q, nombre = 'No name', apikey, page = 1, limit } = req.query; 
 
     res.json({
         msg: 'get API - usuariosGet',
-        params
+        q,
+        nombre,
+        apikey,
+        page,
+        limit
     });
 }
 
