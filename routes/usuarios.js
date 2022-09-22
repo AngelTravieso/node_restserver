@@ -11,9 +11,16 @@ const {
 
 
 router.get('/', usuariosGet );
+
 router.post('/', usuariosPost );
+
 router.put('/', usuariosPut );
+
+// Ruta con parametro opcional (params)
+router.put('/:id', usuariosPut );
+
 router.patch('/', usuariosPatch );
+
 router.delete('/', usuariosDelete );
 
 
