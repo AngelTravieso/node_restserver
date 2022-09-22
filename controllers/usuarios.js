@@ -8,8 +8,13 @@ const usuariosGet = (req, res) => {
 }
 
 const usuariosPost = (req, res) => {
+
+    const { nombre, edad } = req.body;
+
     res.status(201).json({
-        msg: 'post API - Controller',
+        msg: 'post API - Controller'    ,
+        nombre,
+        edad
     });
 }
 
