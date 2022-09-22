@@ -45,6 +45,12 @@ class Server {
                 msg: 'delete API',
             });
         });
+
+        this.app.patch('/api', (req, res) => {
+            res.json({
+                msg: 'patch API',
+            });
+        });
     }
 
     listen() {
