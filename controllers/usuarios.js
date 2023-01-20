@@ -4,6 +4,8 @@ const {
     request
 } = require('express');
 
+const bcriptjs = require('bcryptjs');
+
 // en mayuscula para crear nuevas instancias del modelo
 const Usuario = require('../models/usuario');
 
@@ -46,11 +48,16 @@ const usuariosGet = (req = request, res = response) => {
 
 const usuariosPost = async (req, res = response) => {
 
-    // const {
-    //     nombre,
-    //     edad
-    // } = req.body;
-    const body = req.body;
+    // obtener body completo
+    // const body = req.body;
+
+    // desestructurar parametros
+    const {
+        nombre,
+        email,
+        password,
+        rol
+    } = req.body;
 
     /*
     lo que no esté incluido en mi modelo y venga en la peticion
@@ -58,9 +65,20 @@ const usuariosPost = async (req, res = response) => {
     */
 
     // instanciar modelo
-    const usuario = new Usuario(body);
+    const usuario = new Usuario({
+        nombre,
+        email,
+        password,
+        rol
+    });
 
-    // para guardar la coleccion (por defecto no lo guarda)
+    // Verificar si el correo existe
+
+    // Encriptar la contraseña
+    const salt = bcriptjs.genSaltSync(); // numero de vueltas para hacer mas complicada la dese
+
+
+    // Guardar en BD (por defecto no lo guarda)
     await usuario.save();
 
     // cambiar codigo HTTP de la respuesta
