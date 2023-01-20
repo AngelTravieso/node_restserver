@@ -7,7 +7,10 @@ const { response, request } = require('express');
         URL?variable=valor (http://localhost/api/usuarios?nombre=angel)
         req.query
 
-    BodyParams (POST): 
+    Body (POST)
+        req.body
+
+    BodyParams (PUT): 
         req.params
 */
 
@@ -16,9 +19,8 @@ const usuariosGet = (req = request, res = response) => {
 
     // const params = req.query;
 
-
     // Lo que necesito
-    const { q, nombre = 'No name', apikey, page = 1, limit } = req.query; 
+    const { q, nombre = 'No name', apikey, page = 1, limit } = req.query;
 
     res.json({
         msg: 'get API - usuariosGet',
@@ -32,10 +34,11 @@ const usuariosGet = (req = request, res = response) => {
 
 const usuariosPost = (req = request, res = response) => {
 
+    // const body = req.body;
     const { nombre, edad } = req.body;
 
     res.status(201).json({
-        msg: 'post API - usuariosPost'    ,
+        msg: 'post API - usuariosPost',
         nombre,
         edad
     });
@@ -43,7 +46,7 @@ const usuariosPost = (req = request, res = response) => {
 
 const usuariosPut = (req = request, res = response) => {
 
-    // const id = req.params.id;
+    // const id = req.params.id; (http://localhost:8082/api/usuarios/10)
 
     // Extraer lo que necesito
     const { id } = req.params;
