@@ -39,6 +39,8 @@ const usuariosGet = async (req = request, res = response) => {
     */
     const { limite = 5, desde = 0 } = req.query;
 
+    const query = { state: true };
+
     // Lo que necesito
     // const {
     //     q,
@@ -48,14 +50,23 @@ const usuariosGet = async (req = request, res = response) => {
     //     limit
     // } = req.query;
 
-    // traer todos los usuarios (datos) de la DB
-    const usuarios = await Usuario.find()
-        .skip(Number(desde))
-        // limitar el numero de registros devueltos
-        // los queryParams vienen en String, se debe castear
-        .limit(Number(limite));
+    // Promise.all Efectua las promesas de manera simultanea
+    // es recomendado y más rápido
+    // desestructurar arreglo de promesas
+    // la 1era corresponde a la primera promesa y así sucesivamente
+    const [total, usuarios] = await Promise.all([
+        // traer todos los usuarios (datos) de la BD con state true (activos)
+        // obtener el total de registros en la bd
+        Usuario.countDocuments(query),
+        Usuario.find(query)
+            .skip(Number(desde))
+            // limitar el numero de registros devueltos
+            // los queryParams vienen en String, se debe castear
+            .limit(Number(limite))
+    ]);
 
     res.json({
+        total,
         usuarios
     })
 }
