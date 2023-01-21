@@ -4,7 +4,7 @@ const router = Router();
 const { check } = require('express-validator');
 
 const { validarCampos } = require('../middlewares/validar-campos');
-const { esRoleValido, emailExiste } = require('../helpers/db-validators');
+const { esRoleValido, emailExiste, existeUsuarioPorId } = require('../helpers/db-validators');
 
 /*
     url, middleware?, controlador
@@ -49,10 +49,17 @@ router.post('/', [
     validarCampos
 ], usuariosPost);
 
-router.put('/', usuariosPut);
+// router.put('/', usuariosPut);
 
 // Ruta con parametro opcional (params)
-router.put('/:id', usuariosPut);
+router.put('/:id', [
+    // validar que el ID dado sea un ID de mongo valido
+    check('id', 'No es un ID válido').isMongoId(),
+    // verificar que exista el ID en la bd
+    check('id').custom(existeUsuarioPorId),
+    check('rol').custom(esRoleValido),
+    validarCampos
+], usuariosPut);
 
 router.patch('/', usuariosPatch);
 

@@ -87,7 +87,6 @@ const usuariosPost = async (req, res = response) => {
     // });
 
     res.json({
-        // msg: 'post API - usuariosPost',
         usuario
     });
 }
@@ -98,24 +97,20 @@ const usuariosPut = async (req = request, res = response) => {
     // const id = req.params.id; (http://localhost:8082/api/usuarios/10)
 
     // Extraer lo que necesito
-    const {
-        id
-    } = req.params;
+    const { id } = req.params;
 
-    // extraer lo que necesito manipular
-    const { password, google, email, ...resto } = req.body;
-
-    // TODO validar contra la bd
+    // extraer lo que no necesito manipular
+    const { _id, password, google, email, ...resto } = req.body;
 
     // Si viene el password es porque quiere actualizarla
     if (password) {
         resto.password = hashField(password);
     }
 
+    // se actualiza con los datos que no desestructure
     const usuario = await Usuario.findByIdAndUpdate(id, resto);
 
-    res.status(401).json({
-        msg: 'put API - usuariosPut',
+    res.json({
         usuario
     });
 }

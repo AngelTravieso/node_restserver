@@ -31,8 +31,20 @@ const emailExiste = async (email = '') => {
     }
 }
 
+// Verificar si el ID dado para actualizar existe en la BD
+const existeUsuarioPorId = async (id) => {
+    // Verificar si usuario existe
+    const existeUsuario = await Usuario.findById(id);
+
+    if (!existeUsuario) {
+        throw new Error(`El id ${id} no existe`);
+    }
+}
+
+
 
 module.exports = {
     esRoleValido,
     emailExiste,
+    existeUsuarioPorId,
 }
