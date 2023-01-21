@@ -1,27 +1,53 @@
 const { Router } = require('express');
 const router = Router();
 
-const { 
+const { check } = require('express-validator');
+
+const { validarCampos } = require('../middlewares/validar-campos');
+
+/*
+    url, middleware?, controlador
+*/
+
+const {
     usuariosGet,
     usuariosPut,
     usuariosPost,
     usuariosPatch,
-    usuariosDelete 
+    usuariosDelete
 } = require('../controllers/usuarios');
 
 
-router.get('/', usuariosGet );
+router.get('/', usuariosGet);
 
-router.post('/', usuariosPost );
+/*
+Crea un middleware para validar uno o mas campos de la peticion entrante
+*/
+// router.post('/', [
+//     check('nombre', 'El nombre es obligatorio').not().isEmpty(),
+//     check('password', 'El password debe de ser más de 6 letras').isLength({ min: 6 }),
+//     check('email', 'El email no es válido').isEmail,
+//     check('rol', 'No es un rol válido').isIn(['ADMIN_ROLE', 'USER_ROLE']),
+//     validarCampos
+// ], usuariosPost);
 
-router.put('/', usuariosPut );
+
+router.post('/',[
+    check('nombre', 'El nombre es obligatorio').not().isEmpty(),
+    check('password', 'El password debe de ser más de 6 letras').isLength({ min: 6 }),
+    check('email', 'El correo no es válido').isEmail(),
+    check('rol', 'No es un rol válido').isIn(['ADMIN_ROLE', 'USER_ROLE']),
+    validarCampos
+], usuariosPost );
+
+router.put('/', usuariosPut);
 
 // Ruta con parametro opcional (params)
-router.put('/:id', usuariosPut );
+router.put('/:id', usuariosPut);
 
-router.patch('/', usuariosPatch );
+router.patch('/', usuariosPatch);
 
-router.delete('/', usuariosDelete );
+router.delete('/', usuariosDelete);
 
 
 module.exports = router;

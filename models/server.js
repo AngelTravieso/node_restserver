@@ -30,11 +30,12 @@ class Server {
         // CORS
         this.app.use(cors());
 
+        // Lectura y parseo del body (recibir JSON)
+        this.app.use(express.json());
+
         // Directorio public
         this.app.use(express.static('public'));
 
-        // Lectura y parseo del body (recibir JSON)
-        this.app.use(express.json());
     }
 
     routes() {

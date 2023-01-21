@@ -22,7 +22,7 @@ const Usuario = require('../models/usuario');
         req.params
 */
 
-
+// Obtener usuario
 const usuariosGet = (req = request, res = response) => {
 
     // const params = req.query;
@@ -46,8 +46,8 @@ const usuariosGet = (req = request, res = response) => {
     });
 }
 
+// Crear usuario
 const usuariosPost = async (req, res = response) => {
-
     // obtener body completo
     // const body = req.body;
 
@@ -73,6 +73,14 @@ const usuariosPost = async (req, res = response) => {
     });
 
     // Verificar si el correo existe
+    const existeEmail = await Usuario.findOne({ email });
+
+    // Si el correo existe
+    if (existeEmail) {
+        return res.status(400).json({
+            msg: 'El correo ya está registrado'
+        });
+    }
 
     // Encriptar la contraseña
     const salt = bcriptjs.genSaltSync(); // numero de vueltas para hacer mas complicada la desencriptacion (default 10)
@@ -95,6 +103,7 @@ const usuariosPost = async (req, res = response) => {
     });
 }
 
+// Actualizar Usuario
 const usuariosPut = (req = request, res = response) => {
 
     // const id = req.params.id; (http://localhost:8082/api/usuarios/10)
@@ -110,12 +119,14 @@ const usuariosPut = (req = request, res = response) => {
     });
 }
 
+// Actualizar (el patch es parcial)
 const usuariosPatch = (req = request, res = response) => {
     res.json({
         msg: 'patch API - usuariosPatch',
     });
 }
 
+// Eliminar Usuario
 const usuariosDelete = (req = request, res = response) => {
     res.json({
         msg: 'delete API - usuariosDelete',
