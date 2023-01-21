@@ -10,6 +10,7 @@ const bcriptjs = require('bcryptjs');
 const Usuario = require('../models/usuario');
 
 const { hashField } = require('../helpers/hash-field');
+const usuario = require('../models/usuario');
 
 
 /*
@@ -92,7 +93,7 @@ const usuariosPost = async (req, res = response) => {
 }
 
 // Actualizar Usuario
-const usuariosPut = (req = request, res = response) => {
+const usuariosPut = async (req = request, res = response) => {
 
     // const id = req.params.id; (http://localhost:8082/api/usuarios/10)
 
@@ -102,18 +103,20 @@ const usuariosPut = (req = request, res = response) => {
     } = req.params;
 
     // extraer lo que necesito manipular
-    const { password, google, ...resto } = req.body;
+    const { password, google, email, ...resto } = req.body;
 
     // TODO validar contra la bd
 
     // Si viene el password es porque quiere actualizarla
     if (password) {
-        usuario.password = hashField(password);
+        resto.password = hashField(password);
     }
+
+    const usuario = await Usuario.findByIdAndUpdate(id, resto);
 
     res.status(401).json({
         msg: 'put API - usuariosPut',
-        id,
+        usuario
     });
 }
 
