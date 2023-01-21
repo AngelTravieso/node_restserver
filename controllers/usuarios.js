@@ -143,10 +143,25 @@ const usuariosPatch = (req = request, res = response) => {
 }
 
 // Eliminar Usuario
-const usuariosDelete = (req = request, res = response) => {
-    res.json({
-        msg: 'delete API - usuariosDelete',
+const usuariosDelete = async (req, res = response) => {
+
+    const { id } = req.params;
+
+    // borrar documento fisicamente (no recomendado)
+    // const usuario = await Usuario.findByIdAndDelete(id);
+
+    // deshabilitar usuario (status: true)
+    /*
+    no se recomienda eliminar datos de la bd porque puede
+    llegar a afectar la integridad de la bd, es mejor
+    manejar status para los registros
+    */
+    const usuario = await Usuario.findByIdAndUpdate(id, {
+        state: false
     });
+
+    // retornar ID de usuario eliminado
+    res.json(usuario);
 }
 
 

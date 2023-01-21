@@ -29,7 +29,7 @@ Crea un middleware para validar uno o mas campos de la peticion entrante
 //     check('password', 'El password debe de ser más de 6 letras').isLength({ min: 6 }),
 //     check('email', 'El email no es válido').isEmail,
 //     check('rol', 'No es un rol válido').isIn(['ADMIN_ROLE', 'USER_ROLE']),
-//     validarCampos
+//     validarCampos,
 // ], usuariosPost);
 
 
@@ -46,7 +46,7 @@ router.post('/', [
     check('rol').custom( (rol) => esRoleValido(rol)),
     */
     check('rol').custom(esRoleValido),
-    validarCampos
+    validarCampos,
 ], usuariosPost);
 
 // router.put('/', usuariosPut);
@@ -58,12 +58,16 @@ router.put('/:id', [
     // verificar que exista el ID en la bd
     check('id').custom(existeUsuarioPorId),
     check('rol').custom(esRoleValido),
-    validarCampos
+    validarCampos,
 ], usuariosPut);
 
 router.patch('/', usuariosPatch);
 
-router.delete('/', usuariosDelete);
+router.delete('/:id', [
+    check('id', 'No es un ID válido').isMongoId(),
+    check('id').custom(existeUsuarioPorId),
+    validarCampos,
+], usuariosDelete);
 
 
 module.exports = router;
