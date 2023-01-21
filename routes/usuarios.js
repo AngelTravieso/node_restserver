@@ -35,7 +35,7 @@ Crea un middleware para validar uno o mas campos de la peticion entrante
 
 router.post('/', [
     check('nombre', 'El nombre es obligatorio').not().isEmpty(),
-    check('password', 'El password debe de ser más de 6 letras').isLength({ min: 6 }),
+    check('password', 'El password debe de ser más   de 6 letras').isLength({ min: 6 }),
     check('email', 'El correo no es válido').isEmail(),
     check('email').custom(emailExiste),
     // check('rol', 'No es un rol válido').isIn(['ADMIN_ROLE', 'USER_ROLE']),

@@ -9,6 +9,8 @@ const bcriptjs = require('bcryptjs');
 // en mayuscula para crear nuevas instancias del modelo
 const Usuario = require('../models/usuario');
 
+const { hashField } = require('../helpers/hash-field');
+
 
 /*
     QueryParams (GET): 
@@ -72,11 +74,8 @@ const usuariosPost = async (req, res = response) => {
         rol
     });
 
-    // Encriptar la contraseña
-    const salt = bcriptjs.genSaltSync(); // numero de vueltas para hacer mas complicada la desencriptacion (default 10)
-
-    // Encriptar en una sola via
-    usuario.password = bcriptjs.hashSync(password, salt);
+    // Helper para encriptar String dado (en este caso password)
+    usuario.password = hashField(password);
 
     // Guardar en BD
     await usuario.save();
@@ -101,6 +100,16 @@ const usuariosPut = (req = request, res = response) => {
     const {
         id
     } = req.params;
+
+    // extraer lo que necesito manipular
+    const { password, google, ...resto } = req.body;
+
+    // TODO validar contra la bd
+
+    // Si viene el password es porque quiere actualizarla
+    if (password) {
+        usuario.password = hashField(password);
+    }
 
     res.status(401).json({
         msg: 'put API - usuariosPut',
