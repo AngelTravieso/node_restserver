@@ -21,32 +21,43 @@ const usuario = require('../models/usuario');
     Body (POST)
         req.body
 
-    BodyParams (PUT): 
+    BodyParams (PUT):
+        URL/id (http://localhost/api/usuarios/12312323)
         req.params
 */
 
 // Obtener usuario
-const usuariosGet = (req = request, res = response) => {
+const usuariosGet = async (req = request, res = response) => {
 
     // const params = req.query;
 
+    // si no viene por defecto es 5
+
+    /*
+    limite: cantidad de registros que quiero traer
+    desde: a partir de donde, de que registro quiero traer
+    */
+    const { limite = 5, desde = 0 } = req.query;
+
     // Lo que necesito
-    const {
-        q,
-        nombre = 'No name',
-        apikey,
-        page = 1,
-        limit
-    } = req.query;
+    // const {
+    //     q,
+    //     nombre = 'No name',
+    //     apikey,
+    //     page = 1,
+    //     limit
+    // } = req.query;
+
+    // traer todos los usuarios (datos) de la DB
+    const usuarios = await Usuario.find()
+        .skip(Number(desde))
+        // limitar el numero de registros devueltos
+        // los queryParams vienen en String, se debe castear
+        .limit(Number(limite));
 
     res.json({
-        msg: 'get API - usuariosGet',
-        q,
-        nombre,
-        apikey,
-        page,
-        limit
-    });
+        usuarios
+    })
 }
 
 // Crear usuario
@@ -110,9 +121,7 @@ const usuariosPut = async (req = request, res = response) => {
     // se actualiza con los datos que no desestructure
     const usuario = await Usuario.findByIdAndUpdate(id, resto);
 
-    res.json({
-        usuario
-    });
+    res.json(usuario);
 }
 
 // Actualizar (el patch es parcial)
