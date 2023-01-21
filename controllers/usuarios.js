@@ -75,10 +75,13 @@ const usuariosPost = async (req, res = response) => {
     // Verificar si el correo existe
 
     // Encriptar la contraseña
-    const salt = bcriptjs.genSaltSync(); // numero de vueltas para hacer mas complicada la dese
+    const salt = bcriptjs.genSaltSync(); // numero de vueltas para hacer mas complicada la desencriptacion (default 10)
+
+    // Encriptar en una sola via
+    usuario.password = bcriptjs.hashSync(password, salt);
 
 
-    // Guardar en BD (por defecto no lo guarda)
+    // Guardar en BD
     await usuario.save();
 
     // cambiar codigo HTTP de la respuesta
