@@ -1,4 +1,5 @@
 const Role = require('../models/rol');
+const Usuario = require('../models/usuario');
 
 // Validar roles contra la BD
 
@@ -19,7 +20,19 @@ const esRoleValido = async (rol = '') => {
 
 }
 
+// Validar si el email existe en la colección (no debe repetirse)
+const emailExiste = async (email = '') => {
+    // Verificar si el correo existe
+    const existeEmail = await Usuario.findOne({ email });
+
+    // Si el correo existe
+    if (existeEmail) {
+        throw new Error(`El correo, ${email} ya está registrado`);
+    }
+}
+
 
 module.exports = {
     esRoleValido,
+    emailExiste,
 }
