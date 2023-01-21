@@ -92,6 +92,8 @@ const usuariosPost = async (req, res = response) => {
     // Guardar en BD
     await usuario.save();
 
+    
+
     // cambiar codigo HTTP de la respuesta
     // res.status(201).json({
     //     msg: 'post API - usuariosPost',

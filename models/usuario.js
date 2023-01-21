@@ -23,7 +23,9 @@ const UsuarioSchema = Schema({
     rol: {
         type: String,
         required: true,
-        enum: ['ADMIN_ROLE', 'USER_ROLE']
+        // validar campos permitidos
+        // esto solo valida los Strings
+        // enum: ['ADMIN_ROLE', 'USER_ROLE', 'VENTAS_ROLE']
     },
     state: {
         type: Boolean,
@@ -33,7 +35,22 @@ const UsuarioSchema = Schema({
         type: Boolean,
         default: false,
     }
-})
+});
+
+// se pueden sobreescribir metodos de mongoose
+// debe ser una funcion normal, porque se usa el this
+UsuarioSchema.methods.toJSON = function () {
+    // genera la instancia con los valores respectivos
+    // como un objeto de js
+
+    // sacar objetos de la respuesta
+    /*
+        saco la __v (version), el password
+        y lo demás se almacena en usuario
+    */
+    const { __v, password, ...usuario } = this.toObject();
+    return usuario;
+}
 
 
 /*
