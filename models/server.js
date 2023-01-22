@@ -10,7 +10,9 @@ class Server {
     constructor() {
         this.app = express();
         this.port = process.env.PORT || 8081;
+
         this.usuariosPath = '/api/usuarios';
+        this.authPath = '/api/auth';
 
         // Conexión a BD
         this.conectarDB();
@@ -40,6 +42,7 @@ class Server {
 
     routes() {
         // Middleware condicional
+        this.app.use(this.authPath, require('../routes/auth'));
         this.app.use(this.usuariosPath, require('../routes/usuarios'));
     }
 
