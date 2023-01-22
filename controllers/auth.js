@@ -28,7 +28,6 @@ const login = async (req, res = response) => {
         }
 
         // Verificar la contraseña
-
         // Compara el password que llega con el guardado en la BD
         const validPassword = bcryptjs.compareSync(password, usuario.password);
 
@@ -42,7 +41,7 @@ const login = async (req, res = response) => {
         const token = await generarJWT(usuario.id);
 
         res.json({
-            msg: 'login ok',
+            usuario,
             token,
         });
     } catch (error) {

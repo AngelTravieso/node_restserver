@@ -48,7 +48,11 @@ UsuarioSchema.methods.toJSON = function () {
         saco la __v (version), el password
         y lo demás se almacena en usuario
     */
-    const { __v, password, ...usuario } = this.toObject();
+    const { __v, password, _id, ...usuario } = this.toObject();
+
+    // agregar propiedad uid al usuario (resp http)
+    usuario.uid = _id;
+
     return usuario;
 }
 
