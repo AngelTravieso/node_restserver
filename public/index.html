@@ -5,8 +5,6 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="google-signin-client_id"
-        content="656202371387-3f9mk4s8qvb360ff1hghsjnuj3mmv2gg.apps.googleusercontent.com">
     <title>Google Sign-In</title>
 </head>
 
@@ -14,86 +12,80 @@
     <h1>Google Sign-In</h1>
     <hr>
 
-    <button onclick="trySampleRequest();">Sign In</button>
-
+    <!-- Selector del botón -->
+    <div id="buttonDiv"></div>
 
     <script>
-        var YOUR_CLIENT_ID = '656202371387-3f9mk4s8qvb360ff1hghsjnuj3mmv2gg.apps.googleusercontent.com';
-        var YOUR_REDIRECT_URI = 'http://localhost:8082';
-        var fragmentString = location.hash.substring(1);
 
-        // Parse query string to see if page request is coming from OAuth 2.0 server.
-        var params = {};
-        var regex = /([^&=]+)=([^&]*)/g, m;
-        while (m = regex.exec(fragmentString)) {
-            params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
-        }
-        if (Object.keys(params).length > 0) {
-            localStorage.setItem('oauth2-test-params', JSON.stringify(params));
-            if (params['state'] && params['state'] == 'try_sample_request') {
-                trySampleRequest();
+        // boton de salir
+        const button = document.getElementById("g_id_signout")
+
+        window.onload = function () {
+            google.accounts.id.initialize({
+                // GOOGLE_CLIENT_ID
+                client_id: "656202371387-3f9mk4s8qvb360ff1hghsjnuj3mmv2gg.apps.googleusercontent.com",
+                callback: handleCredentialResponse
+            });
+            google.accounts.id.renderButton(
+                // ID en html del boton
+                document.getElementById("buttonDiv"), {
+                // Personalizar botón
+                type: "standard",
+                shape: "pill",
+                theme: "filled_black",
+                size: "large",
+                text: "Iniciar sesión con Google",
+                locales: "es",
+                width: "40",
             }
-        }
+            );
 
-        // If there's an access token, try an API request.
-        // Otherwise, start OAuth 2.0 flow.
-        function trySampleRequest() {
-            var params = JSON.parse(localStorage.getItem('oauth2-test-params'));
-            if (params && params['access_token']) {
-                var xhr = new XMLHttpRequest();
-                xhr.open('GET',
-                    'https://www.googleapis.com/drive/v3/about?fields=user&' +
-                    'access_token=' + params['access_token']);
-                xhr.onreadystatechange = function (e) {
-                    if (xhr.readyState === 4 && xhr.status === 200) {
-                        console.log(xhr.response);
-                    } else if (xhr.readyState === 4 && xhr.status === 401) {
-                        // Token invalid, so prompt for user permission.
-                        oauth2SignIn();
-                    }
-                };
-                xhr.send(null);
-            } else {
-                oauth2SignIn();
+            // Mostrar dialogo de Google
+            google.accounts.id.prompt();
+
+            // Escuchar la respuesta de la credenciales
+            function handleCredentialResponse(response) {
+
+                const responsePayload = parseJwt(response.credential);
+
+                const data = {
+                    "JWT ID Token": response.credential,
+                    "ID Google": responsePayload.sub,
+                    "Full Name": responsePayload.name,
+                    "Given Name": responsePayload.given_name,
+                    "Last Name": responsePayload.family_name,
+                    "Image URL": responsePayload.picture,
+                    "Email": responsePayload.email
+                }
+
+                console.log(data);
+
             }
-        }
 
-        /*
-         * Create form to request access token from Google's OAuth 2.0 server.
-         */
-        function oauth2SignIn() {
-            // Google's OAuth 2.0 endpoint for requesting an access token
-            var oauth2Endpoint = 'https://accounts.google.com/o/oauth2/v2/auth';
+            // Parsear jwt
+            function parseJwt(token) {
+                // toma el payload del token
+                var base64Url = token.split('.')[1];
+                var base64 = base64Url.replace('-', '+').replace('_', '/');
 
-            // Create element to open OAuth 2.0 endpoint in new window.
-            var form = document.createElement('form');
-            form.setAttribute('method', 'GET'); // Send as a GET request.
-            form.setAttribute('action', oauth2Endpoint);
+                /*
 
-            // Parameters to pass to OAuth 2.0 endpoint.
-            var params = {
-                'client_id': '656202371387-3f9mk4s8qvb360ff1hghsjnuj3mmv2gg.apps.googleusercontent.com',
-                'redirect_uri': 'http://localhost:8082',
-                'scope': 'https://www.googleapis.com/auth/drive.metadata.readonly',
-                'state': 'try_sample_request',
-                'include_granted_scopes': 'true',
-                'response_type': 'token'
+                    btoa
+                    btoa() codifica un string en Base64
+
+                    decodi
+                    atob() función que decodifica un String cuya
+                    data ha sido codificada en Base64
+                */
+                return JSON.parse(window.atob(base64));
             };
-
-            // Add form parameters as hidden input values.
-            for (var p in params) {
-                var input = document.createElement('input');
-                input.setAttribute('type', 'hidden');
-                input.setAttribute('name', p);
-                input.setAttribute('value', params[p]);
-                form.appendChild(input);
-            }
-
-            // Add form to page and submit it to open the OAuth 2.0 endpoint.
-            document.body.appendChild(form);
-            form.submit();
         }
+
     </script>
+
+    <!-- Script de Google SignIn -->
+    <script src="https://accounts.google.com/gsi/client" referrerpolicy="no-referrer-when-downgrade" async
+        defer></script>
 
 </body>
 
