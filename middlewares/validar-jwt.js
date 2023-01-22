@@ -1,7 +1,9 @@
 const { request, response } = require('express');
 const jwt = require('jsonwebtoken');
 
-const validarJWT = (req = request, res = response, next) => {
+const Usuario = require('../models/usuario');
+
+const validarJWT = async (req = request, res = response, next) => {
 
 
     const token = req.header('x-token');
@@ -17,11 +19,28 @@ const validarJWT = (req = request, res = response, next) => {
         // Verificar jwt (si es valido o no)
         const { uid } = jwt.verify(token, process.env.SECRETORPUBLICKEY);
 
+        // Leer el usuario al que corresponde uid
+        const usuario = await Usuario.findById(uid);
+
+        // Si el usuario no existe
+        if (!usuario) {
+            return res.status(400).json({
+                msg: 'Token no válido - usuario no existe en la BD'
+            });
+        }
+
+        // Verificar si el uid tiene state true
+        if (!usuario.state) {
+            return res.status(401).json({
+                msg: 'Token no válido - usuario false',
+            });
+        }
+
         // { uid: '63cc4ac43624c22f8916f723', iat: 1674403982, exp: 1674418382 }
         // console.log(payload);
 
         // crear nueva propiedad en el objeto req
-        req.uid = uid;
+        req.usuario = usuario;
 
         next();
     } catch (error) {

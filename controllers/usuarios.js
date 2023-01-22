@@ -147,8 +147,6 @@ const usuariosDelete = async (req, res = response) => {
 
     const { id } = req.params;
 
-    // const uid = req.uid;
-
     // borrar documento fisicamente (no recomendado)
     // const usuario = await Usuario.findByIdAndDelete(id);
 
@@ -162,8 +160,14 @@ const usuariosDelete = async (req, res = response) => {
         state: false
     });
 
-    // retornar ID de usuario eliminado
+    // obtener usuarioAutenticado con el jwt
+    // const usuarioAutenticado = req.usuario;
+
+    // retornar ID de usuario eliminado y autenticado
+    // res.json({ usuario, usuarioAutenticado });
+
     res.json(usuario);
+
 }
 
 
