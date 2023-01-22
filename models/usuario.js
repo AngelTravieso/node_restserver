@@ -23,9 +23,10 @@ const UsuarioSchema = Schema({
     rol: {
         type: String,
         required: true,
+        default: 'USER_ROLE',
         // validar campos permitidos
         // esto solo valida los Strings
-        // enum: ['ADMIN_ROLE', 'USER_ROLE', 'VENTAS_ROLE']
+        enum: ['ADMIN_ROLE', 'USER_ROLE', 'VENTAS_ROLE']
     },
     state: {
         type: Boolean,
