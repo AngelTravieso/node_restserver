@@ -15,7 +15,13 @@
     <!-- Selector del botón -->
     <div id="buttonDiv"></div>
 
+    <button id="g_id_signout">
+        Log out
+    </button>
+
     <script>
+
+        let googleId;
 
         // boton de salir
         const button = document.getElementById("g_id_signout")
@@ -36,7 +42,8 @@
                 size: "large",
                 text: "Iniciar sesión con Google",
                 locales: "es",
-                width: "40",
+                // El boton personalizado no se muestra si el width es menor a 200
+                width: "250",
             }
             );
 
@@ -48,9 +55,11 @@
 
                 const responsePayload = parseJwt(response.credential);
 
+                googleId = responsePayload.sub;
+
                 const data = {
                     "JWT ID Token": response.credential,
-                    "ID Google": responsePayload.sub,
+                    "ID Google": googleId,
                     "Full Name": responsePayload.name,
                     "Given Name": responsePayload.given_name,
                     "Last Name": responsePayload.family_name,
@@ -62,6 +71,32 @@
 
             }
 
+
+            // cerrar sesion
+            function closeSession(googleId) {
+
+                // https://developers.google.com/identity/gsi/web/guides/revoke
+
+                // se puede pasar el id o el correo del usuario logueado
+                google.accounts.id.revoke(googleId, done => {
+
+                    try {
+                        // sesion cerrada correctamente
+                        console.log(`Usuario ${googleId} ha cerrado sesión: ${done.successful}`);
+                    } catch (error) {
+                        console.log(error);
+                        // hubo algun error
+                        console.log(done.error);
+
+                    }
+
+                });
+            }
+
+            // evento click para cerrar sesión a google
+            button.addEventListener("click", () => closeSession(googleId));
+
+
             // Parsear jwt
             function parseJwt(token) {
                 // toma el payload del token
@@ -69,10 +104,10 @@
                 var base64 = base64Url.replace('-', '+').replace('_', '/');
 
                 /*
-
+    
                     btoa
                     btoa() codifica un string en Base64
-
+    
                     decodi
                     atob() función que decodifica un String cuya
                     data ha sido codificada en Base64
