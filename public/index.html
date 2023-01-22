@@ -21,6 +21,9 @@
 
     <script>
 
+        let url = (window.location.hostname.includes('localhost'))
+            ? 'http://localhost:8082/api/auth/google'
+            : 'https://rest-server-curso-node-fh.herokuapp.com/api/auth/google'
         let googleId;
 
         // boton de salir
@@ -55,10 +58,13 @@
 
                 const responsePayload = parseJwt(response.credential);
 
+                // Google ID
                 googleId = responsePayload.sub;
 
-                const data = {
-                    "JWT ID Token": response.credential,
+                // JWT Google
+                let id_token = response.credential;
+
+                const dataGoogle = {
                     "ID Google": googleId,
                     "Full Name": responsePayload.name,
                     "Given Name": responsePayload.given_name,
@@ -67,7 +73,18 @@
                     "Email": responsePayload.email
                 }
 
-                console.log(data);
+                const data = { id_token };
+
+                // enviar token al backend
+                fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    // JWT Google
+                    body: JSON.stringify(data),
+                })
+                    .then(resp => resp.json())
+                    .then(data => console.log('Backend', data))
+                    .catch(console.log);
 
             }
 
