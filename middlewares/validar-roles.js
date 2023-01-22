@@ -24,7 +24,7 @@ const esAdminRole = (req, res = response, next) => {
 }
 
 // Validar que el rol que llega en la req este en la BD (sea permitido)
-const tieneRole = (...roles) => {
+const tieneRole = (...roles) => { // spread para agarrar todos los argumentos
     // retorno una funcion que se va a ejecutar
     return (req, res = response, next) => {
         // console.log(roles, req.usuario.rol);
