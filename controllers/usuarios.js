@@ -147,6 +147,8 @@ const usuariosDelete = async (req, res = response) => {
 
     const { id } = req.params;
 
+    // const uid = req.uid;
+
     // borrar documento fisicamente (no recomendado)
     // const usuario = await Usuario.findByIdAndDelete(id);
 
