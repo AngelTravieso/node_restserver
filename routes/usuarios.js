@@ -5,6 +5,7 @@ const router = Router();
 
 const { validarCampos } = require('../middlewares/validar-campos');
 const { validarJWT } = require('../middlewares/validar-jwt');
+const { esAdminRole, tieneRole } = require('../middlewares/validar-roles');
 
 const { esRoleValido, emailExiste, existeUsuarioPorId } = require('../helpers/db-validators');
 
@@ -19,7 +20,6 @@ const {
     usuariosPatch,
     usuariosDelete
 } = require('../controllers/usuarios');
-const { esAdminRole } = require('../middlewares/validar-roles');
 
 
 router.get('/', usuariosGet);
@@ -68,7 +68,12 @@ router.patch('/', usuariosPatch);
 
 router.delete('/:id', [
     validarJWT,
-    esAdminRole,
+    // fuerza a que el usuario sea 'ADMIN_ROLE' (administrador)
+    // esAdminRole,
+
+    // fuerza a que se mande un rol permitido (en la bd)
+    // aquí se ejecuta la funcion (ver validar-roles, tieneRole)
+    tieneRole('ADMIN_ROLE', 'VENTAS_ROLE'),
     check('id', 'No es un ID válido').isMongoId(),
     check('id').custom(existeUsuarioPorId),
     validarCampos,
