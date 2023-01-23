@@ -55,18 +55,51 @@ const login = async (req, res = response) => {
 
 }
 
-// 
+// Google SignIn - Backend
 const googleSignIn = async (req, res = response) => {
 
     const { id_token } = req.body;
 
-    // Verificar token de google (que sea valido)
-    const googleUser = await googleVerify(id_token);
-
     try {
+        // extraer lo necesario
+        const { nombre, email, img } = await googleVerify(id_token); // Verificar token de google (que sea valido)
+
+        // verificar si el email existe
+        let usuario = await Usuario.findOne({ email });
+
+        // si el usuario no existe
+        if (!usuario) {
+            // tengo que crearlo
+
+            const data = {
+                nombre,
+                email,
+                // no importa como enviemos la password (porque esta es de google)
+                password: ':P',
+                img,
+                google: true,
+            };
+
+            // crear modelo usario con datos
+            usuario = new Usuario(data);
+
+            // guardar usuario
+            await usuario.save();
+        }
+
+        // Si el usuario en DB esta bloqueado (status: false)
+        if (!usuario.state) {
+            return res.status(401).json({
+                msg: 'Hable con el administrador, usuario bloqueado',
+            });
+        }
+
+        // Generar el JWT
+        const token = await generarJWT(usuario.id);
+
         res.json({
-            msg: 'Todo ok! google signin',
-            googleUser,
+            usuario,
+            token,
         });
 
     } catch (error) {
