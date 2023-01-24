@@ -1,6 +1,5 @@
-const { Categoria } = require('../models');
+const { Usuario, Categoria } = require('../models');
 const Role = require('../models/rol');
-const Usuario = require('../models/usuario');
 
 // Validar roles contra la BD
 
@@ -11,6 +10,7 @@ const Usuario = require('../models/usuario');
     4. muestro error personalizado (no revienta la app) 
 */
 
+// Validar que el rol este en la BD
 const esRoleValido = async (rol = '') => {
     const existeRol = await Role.findOne({ rol });
 
