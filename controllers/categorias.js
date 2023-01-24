@@ -83,8 +83,7 @@ const crearCategoria = async (req, res = response) => {
         const categoria = new Categoria(data);
 
         // Guardar en DB
-        await categoria.save();
-
+        await categoria.save()
 
         res.status(201).json(categoria);
 
@@ -126,14 +125,6 @@ const actualizarCategoria = async (req, res) => {
         });
     }
 
-    // Si se actualizará por un nombre que ya existe
-    if (categoriaDB.nombre === nombre) {
-        res.status(401).json({
-            msg: `El nombre ${nombre} ya existe`,
-        });
-
-    }
-
     // Buscar categoria por ID y cambiar nombre
     // new: true para enviar siempre el nuevo archivo
     const categoria = await Categoria.findByIdAndUpdate(id, data, {
@@ -147,16 +138,22 @@ const actualizarCategoria = async (req, res) => {
 // eliminar categoria - state: false
 const eliminarCategoria = async (req, res = response) => {
 
-    const {
-        id
-    } = req.params;
+    const { id } = req.params;
+
+    const categoria = await Categoria.findById( id );
+
+    if(!categoria.state) {
+        return res.status(401).json({
+            msg: `La categoría ${categoria.nombre} ya está eliminada`,
+        });
+    }
 
     // Buscar ID de la categoria y cambiar status: false
     const usuarioEliminado = await Categoria.findByIdAndUpdate(id, {
         state: false
     }, {
         new: true
-    });
+    }).populate('usuario', 'nombre');
 
     res.json(usuarioEliminado);
 }

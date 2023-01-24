@@ -67,7 +67,7 @@ router.put('/:id', [
     validarCampos,
 ], usuariosPut);
 
-router.patch('/', usuariosPatch);
+// router.patch('/', usuariosPatch);
 
 router.delete('/:id', [
     validarJWT,
