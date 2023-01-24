@@ -18,7 +18,17 @@ const CategoriaSchema = Schema({
         ref: 'Usuario',
         // Todas las categorias deben tener un usuario
         required: true,
-    }
+    },
+
 });
+
+
+CategoriaSchema.methods.toJSON = function () {
+    // quitar __v, _id de la response
+    const { __v, _id, ...categoria } = this.toObject();
+
+    return categoria;
+
+}
 
 module.exports = model('Categoria', CategoriaSchema);
