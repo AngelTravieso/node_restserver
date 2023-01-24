@@ -23,9 +23,6 @@ const {
     esAdminRole
 } = require('../middlewares');
 
-// middleware personalizado para validar id de las rutas
-// existeCategoria
-
 /**
  * {{url}}/api/categorias
  */
@@ -59,6 +56,7 @@ router.put('/:id', [
 router.delete('/:id', [
     validarJWT,
     check('id', 'No es una ID de mongo válido').isMongoId(),
+    check('id').custom(existeCategoriaId),
     esAdminRole,
     validarCampos,
 ], 

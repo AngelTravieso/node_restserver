@@ -1,9 +1,9 @@
 const {
     response
 } = require("express");
+
 const {
-    Categoria,
-    Usuario
+    Categoria
 } = require("../models");
 
 // obtenerCategorias - paginado - total - populate
@@ -104,22 +104,45 @@ const actualizarCategoria = async (req, res) => {
     // Nombre nuevo de la categoria
     const nombre = req.body.nombre.toUpperCase();
 
-    // Buscar categoria por ID y cambiar nombre
-    const categoria = await Categoria.findByIdAndUpdate( id, { nombre } );
+    const categoriaDB = await Categoria.findById(id);
 
-    res.json( categoria );
+    // Si la categoria tiene status: false
+    if (!categoriaDB.state) {
+        res.status(401).json({
+            msg: `La categoria ${categoriaDB.nombre} ya está eliminada`,
+        });
+    }
+
+    // Si se actualizará por un nombre que ya existe
+    if (categoriaDB.nombre === nombre) {
+        res.status(401).json({
+            msg: `El nombre ${nombre} ya existe`,
+        });
+
+    }
+
+    // Buscar categoria por ID y cambiar nombre
+    const categoria = await Categoria.findByIdAndUpdate(id, {
+        nombre
+    });
+
+    res.json(categoria);
 
 }
 
 // eliminar categoria - state: false
 const eliminarCategoria = async (req, res = response) => {
 
-    const { id } = req.params;
+    const {
+        id
+    } = req.params;
 
     // Buscar ID de la categoria y cambiar status: false
-    const usuarioEliminado = await Categoria.findByIdAndUpdate(id, { state: false });
+    const usuarioEliminado = await Categoria.findByIdAndUpdate(id, {
+        state: false
+    });
 
-    res.json( usuarioEliminado );
+    res.json(usuarioEliminado);
 }
 
 module.exports = {
