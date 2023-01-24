@@ -1,25 +1,34 @@
-const { response } = require("express");
-const { Categoria, Usuario } = require("../models");
+const {
+    response
+} = require("express");
+const {
+    Categoria,
+    Usuario
+} = require("../models");
 
 // obtenerCategorias - paginado - total - populate
 const obtenerCategorias = async (req, res = response) => {
 
-    const { limite = 10, desde = 0 } = req.query;
+    const {
+        limite = 10, desde = 0
+    } = req.query;
 
     // query, traer categorias con state: true
-    const query = { state: true };
+    const query = {
+        state: true
+    };
 
     // Buscar categorias con parametros
     const [total, categorias] = await Promise.all([
         Categoria.countDocuments(),
         Categoria.find(query)
-            /*
-                mantener referencia de la colección de usuario
-                datos del usuario que creo la categoria
-            */
-            .populate('usuario')
-            .skip(Number(desde))
-            .limit(Number(limite))
+        /*
+            mantener referencia de la colección de usuario
+            datos del usuario que creo la categoria
+        */
+        .populate('usuario')
+        .skip(Number(desde))
+        .limit(Number(limite))
     ]);
 
 
@@ -33,7 +42,9 @@ const obtenerCategorias = async (req, res = response) => {
 // obtenerCategoria - populate {}
 const obtenerCategoria = async (req, res = response) => {
 
-    const { id } = req.params;
+    const {
+        id
+    } = req.params;
 
     const categoria = await Categoria.findById(id)
         .populate('usuario');
@@ -49,7 +60,9 @@ const crearCategoria = async (req, res = response) => {
     const nombre = req.body.nombre.toUpperCase();
 
     try {
-        const categoriaDB = await Categoria.findOne({ nombre });
+        const categoriaDB = await Categoria.findOne({
+            nombre
+        });
 
         // Si la categoria ya esta creada
         if (categoriaDB) {
@@ -84,6 +97,19 @@ const crearCategoria = async (req, res = response) => {
 }
 
 // actualizar categoria (solo recibe el nombre)
+const actualizarCategoria = async (req, res) => {
+    // ID de la categoria a actualizar
+    const { id } = req.params;
+
+    // Nombre nuevo de la categoria
+    const nombre = req.body.nombre.toUpperCase();
+
+    // Buscar categoria por ID y cambiar nombre
+    const categoria = await Categoria.findByIdAndUpdate( id, { nombre } );
+
+    res.json( categoria );
+
+}
 
 // eliminar categoria - state: false
 
@@ -91,4 +117,5 @@ module.exports = {
     crearCategoria,
     obtenerCategorias,
     obtenerCategoria,
+    actualizarCategoria,
 }
