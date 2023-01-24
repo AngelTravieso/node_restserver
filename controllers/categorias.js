@@ -1,5 +1,5 @@
 const { response } = require("express");
-const { Categoria } = require("../models");
+const { Categoria, Usuario } = require("../models");
 
 // obtenerCategorias - paginado - total - populate
 const obtenerCategorias = async (req, res = response) => {
@@ -31,6 +31,16 @@ const obtenerCategorias = async (req, res = response) => {
 }
 
 // obtenerCategoria - populate {}
+const obtenerCategoria = async (req, res = response) => {
+
+    const { id } = req.params;
+
+    const categoria = await Categoria.findById(id)
+        .populate('usuario');
+
+    res.json(categoria);
+
+}
 
 // Crear categoria
 const crearCategoria = async (req, res = response) => {
@@ -80,4 +90,5 @@ const crearCategoria = async (req, res = response) => {
 module.exports = {
     crearCategoria,
     obtenerCategorias,
+    obtenerCategoria,
 }

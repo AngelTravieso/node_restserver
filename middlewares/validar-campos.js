@@ -1,5 +1,6 @@
 const { validationResult } = require('express-validator');
 
+// Para validar campos faltantes en el body de una peticion
 const validarCampos = (req, res, next) => {
 
     const errors = validationResult(req);

@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 
 const Usuario = require('../models/usuario');
 
+// Validar integridad del JWT
 const validarJWT = async (req = request, res = response, next) => {
 
     const token = req.header('x-token');
