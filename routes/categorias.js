@@ -8,7 +8,8 @@ const {
     crearCategoria,
     obtenerCategorias,
     obtenerCategoria,
-    actualizarCategoria
+    actualizarCategoria,
+    eliminarCategoria
 } = require('../controllers/categorias');
 const {
     existeCategoriaId
@@ -18,7 +19,8 @@ const router = Router();
 
 const {
     validarJWT,
-    validarCampos
+    validarCampos,
+    esAdminRole
 } = require('../middlewares');
 
 // middleware personalizado para validar id de las rutas
@@ -54,9 +56,13 @@ router.put('/:id', [
 ], actualizarCategoria);
 
 // Borrar una categoria - ADMIN_ROLE
-router.delete('/', (req, res) => {
-    res.json('delete');
-});
+router.delete('/:id', [
+    validarJWT,
+    check('id', 'No es una ID de mongo válido').isMongoId(),
+    esAdminRole,
+    validarCampos,
+], 
+eliminarCategoria);
 
 
 module.exports = router;

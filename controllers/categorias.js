@@ -112,10 +112,20 @@ const actualizarCategoria = async (req, res) => {
 }
 
 // eliminar categoria - state: false
+const eliminarCategoria = async (req, res = response) => {
+
+    const { id } = req.params;
+
+    // Buscar ID de la categoria y cambiar status: false
+    const usuarioEliminado = await Categoria.findByIdAndUpdate(id, { state: false });
+
+    res.json( usuarioEliminado );
+}
 
 module.exports = {
     crearCategoria,
     obtenerCategorias,
     obtenerCategoria,
     actualizarCategoria,
+    eliminarCategoria,
 }
