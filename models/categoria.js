@@ -24,8 +24,9 @@ const CategoriaSchema = Schema({
 
 
 CategoriaSchema.methods.toJSON = function () {
-    // quitar __v, _id de la response
-    const { __v, _id, ...categoria } = this.toObject();
+    // quitar __v, state de la response
+    // no me interesa enviar siempre el state si es true
+    const { __v, state, ...categoria } = this.toObject();
 
     return categoria;
 

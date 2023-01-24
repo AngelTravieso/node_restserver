@@ -25,8 +25,9 @@ const obtenerCategorias = async (req, res = response) => {
         /*
             mantener referencia de la colección de usuario
             datos del usuario que creo la categoria
+            mostrar solo el nombre del usuario
         */
-        .populate('usuario')
+        .populate('usuario', 'nombre')
         .skip(Number(desde))
         .limit(Number(limite))
     ]);
