@@ -100,10 +100,22 @@ const crearCategoria = async (req, res = response) => {
 // actualizar categoria (solo recibe el nombre)
 const actualizarCategoria = async (req, res) => {
     // ID de la categoria a actualizar
-    const { id } = req.params;
+    const {
+        id
+    } = req.params;
 
-    // Nombre nuevo de la categoria
-    const nombre = req.body.nombre.toUpperCase();
+    // Extraer lo que no necesito (state y usuario)
+    const {
+        state,
+        usuario,
+        ...data
+    } = req.body;
+
+    // Nombre nuevo de la categoria (en mayusculas)
+    data.nombre = data.nombre.toUpperCase();
+
+    // ID del usuario que hizo la modificación
+    data.usuario = req.usuario._id;
 
     const categoriaDB = await Categoria.findById(id);
 
@@ -123,8 +135,9 @@ const actualizarCategoria = async (req, res) => {
     }
 
     // Buscar categoria por ID y cambiar nombre
-    const categoria = await Categoria.findByIdAndUpdate(id, {
-        nombre
+    // new: true para enviar siempre el nuevo archivo
+    const categoria = await Categoria.findByIdAndUpdate(id, data, {
+        new: true
     });
 
     res.json(categoria);
@@ -141,6 +154,8 @@ const eliminarCategoria = async (req, res = response) => {
     // Buscar ID de la categoria y cambiar status: false
     const usuarioEliminado = await Categoria.findByIdAndUpdate(id, {
         state: false
+    }, {
+        new: true
     });
 
     res.json(usuarioEliminado);

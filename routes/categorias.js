@@ -46,6 +46,7 @@ router.post('/', [
 
 // Actualizar un registro por este ID
 router.put('/:id', [
+    validarJWT,
     check('id', 'No es una ID de mongo válido').isMongoId(),
     check('id').custom(existeCategoriaId),
     check('nombre', 'El nombre es obligatorio').not().isEmpty(),
