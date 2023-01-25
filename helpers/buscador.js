@@ -52,7 +52,7 @@ const buscarCategorias = async( termino = '', res = response ) => {
     // Si es un ID válido
     if(esMongoID) {
         // traer categoria con status: true
-        const categoria = await Categoria.findById( termino ).and({ state: true });
+        const categoria = await Categoria.findById( termino ).and({ state: true }).populate('usuario', 'nombre');
         return res.json({
             // Si el categoria existe regreso un arreglo con el categoria, si no un array vacio
             results: ( categoria ) ? [ categoria ] : [],
@@ -63,7 +63,7 @@ const buscarCategorias = async( termino = '', res = response ) => {
     const regexp = new RegExp(termino, 'i');
 
     // Búsqueda por nombre (solo las que tengan status: true)
-    const categorias = await Categoria.find({ nombre: regexp }).and( { state: true });
+    const categorias = await Categoria.find({ nombre: regexp }).and( { state: true }).populate('usuario', 'nombre');
 
     return res.json({
         categorias,
@@ -80,7 +80,7 @@ const buscarProductos = async( termino = '', res = response ) => {
     // Si es un ID válido
     if(esMongoID) {
         // traer producto con status: true
-        const producto = await Producto.findById( termino ).and({ state: true });
+        const producto = await Producto.findById( termino ).and({ state: true }).populate('categoria', 'nombre');
         return res.json({
             // Si el producto existe regreso un arreglo con el categoria, si no un array vacio
             results: ( producto ) ? [ producto ] : [],
@@ -91,7 +91,7 @@ const buscarProductos = async( termino = '', res = response ) => {
     const regexp = new RegExp(termino, 'i');
 
     // Búsqueda por nombre (solo las que tengan status: true)
-    const productos = await Producto.find({ nombre: regexp }).and( { state: true });
+    const productos = await Producto.find({ nombre: regexp }).and( { state: true }).populate('categoria', 'nombre');;
 
     return res.json({
         productos,
