@@ -1,57 +1,16 @@
-const { response } = require("express");
-const { ObjectId } = require('mongoose').Types;
+const {
+    response
+} = require("express");
 
-const { Usuario } = require('../models');
-
-const coleccionesPermitidas = [
-    'categoria',
-    'productos',
-    'rol',
-    'usuarios',
-];
-
-const buscarUsuarios = async( termino = '', res = response ) => {
-
-    // Validar si el termino es un ID de mongo válido
-    const esMongoID = ObjectId.isValid( termino );
-
-    // Si es un ID válido
-    if(esMongoID) {
-        const usuario = await Usuario.findById( termino );
-        return res.json({
-            // Si el usuario existe regreso un arreglo con el usuario, si no un array vacio
-            results: ( usuario ) ? [ usuario ] : [],
-        });
-    }
-
-    // buscar el termino haciendolo insensible a mayusculas o minusculas
-    const regexp = new RegExp(termino, 'i');
-
-    // Búsqueda por nombre o correo
-    const [ total, usuarios ] = await Promise.all([
-        Usuario.count({
-            // or de mongo db, [ querys ]
-            $or: [{nombre: regexp }, { email: regexp}],
-            // que el usuario este activo
-            $and: [{  state: true }],
-        }),
-        // El find regresa un arreglo vacio si no consigue resultados
-        Usuario.find({
-            // or de mongo db, [ querys ]
-            $or: [{nombre: regexp }, { email: regexp}],
-            // que el usuario este activo
-            $and: [{  state: true }],
-        }),
-    ]);
-    
-    return res.json({
-        total,
-        results: usuarios,
-    });
+const {
+    coleccionesPermitidas,
+    buscarCategorias,
+    buscarProductos,
+    buscarUsuarios
+} = require("../helpers");
 
 
-}
-
+// Buscar en las colecciones por término
 const buscar = (req, res = response) => {
 
     // Obtener parametros de busqueda
@@ -68,23 +27,20 @@ const buscar = (req, res = response) => {
     }
 
     switch (coleccion) {
-        case 'categoria':
+        case 'categorias':
+            buscarCategorias(termino, res);
             break;
         case 'productos':
+            buscarProductos(termino, res);
             break;
         case 'usuarios':
-            buscarUsuarios(termino, res)
+            buscarUsuarios(termino, res);
             break;
         default:
             res.status(500).json({
                 msg: 'Se me olvidó haceer esta búsqueda',
             });
     }
-
-    // res.json({
-    //     coleccion,
-    //     termino,
-    // });
 
 }
 
