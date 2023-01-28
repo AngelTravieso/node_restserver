@@ -4,6 +4,7 @@ const dbValidators = require('./db-validators');
 const generarJWT = require('./generarJWT');
 const googleVerify = require('./google-verify');
 const hashField = require('./hash-field');
+const subirArchivo = require('./subir-archivo');
 
 module.exports = {
     ...buscador,
@@ -12,4 +13,5 @@ module.exports = {
     ...generarJWT,
     ...googleVerify,
     ...hashField,
+    ...subirArchivo,
 }
