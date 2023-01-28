@@ -3,7 +3,7 @@ const {
 } = require("express");
 
 const {
-    coleccionesPermitidas,
+    colecciones,
     buscarCategorias,
     buscarProductos,
     buscarUsuarios
@@ -20,7 +20,7 @@ const buscar = (req, res = response) => {
     } = req.params;
 
     // Validar la coleccion por la que se busca
-    if (!coleccionesPermitidas.includes(coleccion)) {
+    if (!colecciones.includes(coleccion)) {
         return res.status(400).json({
             msg: `Las coleciones permitidas son ${coleccionesPermitidas}`,
         });

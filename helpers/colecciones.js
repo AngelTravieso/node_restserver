@@ -1,8 +1,8 @@
-const coleccionesPermitidas = [
+const colecciones = [
     'categorias',
     'productos',
     'rol',
     'usuarios',
 ];
 
-exports.coleccionesPermitidas = coleccionesPermitidas;
+exports.colecciones = colecciones;

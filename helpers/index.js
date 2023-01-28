@@ -1,5 +1,5 @@
 const buscador = require('./buscador');
-const coleccionesPermitidas = require('./colecciones');
+const colecciones = require('./colecciones');
 const dbValidators = require('./db-validators');
 const generarJWT = require('./generarJWT');
 const googleVerify = require('./google-verify');
@@ -8,7 +8,7 @@ const subirArchivo = require('./subir-archivo');
 
 module.exports = {
     ...buscador,
-    ...coleccionesPermitidas,
+    ...colecciones,
     ...dbValidators,
     ...generarJWT,
     ...googleVerify,
