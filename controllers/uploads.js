@@ -1,5 +1,6 @@
 const { response } = require("express");
 const path = require('path');
+const { v4: uuidv4 } = require('uuid');
 
 const cargarArchivo = (req, res = response) => {
 
@@ -41,19 +42,24 @@ const cargarArchivo = (req, res = response) => {
         });
     }
 
-    // // Path donde se almacenará el archivo
-    // const uploadPath = path.join(__dirname,'../uploads/', archivo.name);
 
-    // // Mover el archivo al directorio uploads
-    // archivo.mv(uploadPath, (err) => {
-    //     if (err) {
-    //         return res.status(500).json({err});
-    //     }
+    // Cambiar nombre de archivo 
+    // Ej:'1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed.png'
+    const nombreTemp = uuidv4() + '.' + extension;
 
-    //     res.json({
-    //         msg: `El archivo se subio a ${uploadPath}`,
-    //     });
-    // });
+    // Path donde se almacenará el archivo
+    const uploadPath = path.join(__dirname,'../uploads/', nombreTemp);
+
+    // Mover el archivo al directorio uploads
+    archivo.mv(uploadPath, (err) => {
+        if (err) {
+            return res.status(500).json({err});
+        }
+
+        res.json({
+            msg: `El archivo se subio a ${uploadPath}`,
+        });
+    });
 }
 
 module.exports = {
