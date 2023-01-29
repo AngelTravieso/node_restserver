@@ -134,8 +134,17 @@ const actualizarImagenCloudinary = async (req, res = response) => {
 
     // Si el modelo tiene propiedad img
     if (modelo.img) {
-        // TODO eliminar img de cloudinary
 
+        const nombreArr = modelo.img.split('/');
+
+        // Obtener nombre de la img
+        nombre = nombreArr[nombreArr.length - 1];
+
+        // Obtener id publico de la img
+        const [public_id] = nombre.split('.'); // split por el . de la url de la img
+
+        // Eliminar imagen
+        cloudinary.uploader.destroy(public_id);
     }
 
     // Obtener path temporal de la img
