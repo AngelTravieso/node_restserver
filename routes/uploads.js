@@ -17,9 +17,9 @@ router.post('/', [
 
 router.put('/:coleccion/:id', [
     check('id', 'Ingresa un ID de mongo válido').isMongoId(),
-    
     // Validar la coleccion
-    check('coleccion').custom( coleccion => coleccionesPermitidas(coleccion, ['usuarios', 'productos'])),
+    check('coleccion').custom(coleccion => coleccionesPermitidas(coleccion, ['usuarios', 'productos'])),
+    validarArchivos,
     validarCampos,
 ], actualizarImagen);
 
