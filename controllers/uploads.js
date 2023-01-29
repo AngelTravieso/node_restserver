@@ -90,7 +90,7 @@ const actualizarImagen = async (req, res = response) => {
 
 }
 
-// Mostrar imagen
+// Mostrar imagen (devolver al front)
 const mostrarImagen = async (req, res = response) => {
 
     const { coleccion, id } = req.params;
@@ -130,7 +130,7 @@ const mostrarImagen = async (req, res = response) => {
 
     // Si el modelo tiene propiedad img
     if (modelo.img) {
-        // Hay que borrar la imagen del servidor
+        // Armar ruta de la imagen
         const pathImagen = path.join(__dirname, '../uploads', coleccion, modelo.img);
 
         // Si la imagen existe
@@ -141,9 +141,10 @@ const mostrarImagen = async (req, res = response) => {
 
     }
 
-    res.json({
-        msg: 'Falta placeholder',
-    });
+    // Devolver img default (placeholder) si no hay modelo con img
+    const placeholderImg = path.join(__dirname, '../assets/no-image.jpg');
+
+    res.sendFile(placeholderImg);
 }
 
 module.exports = {
